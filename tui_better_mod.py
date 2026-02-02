@@ -16,6 +16,7 @@ from collections import deque, defaultdict
 from typing import List, Dict, Set, Optional, Tuple, Any
 import pyperclip
 from .parser import SimpleParser
+from .replacer import SimpleReplacer
 
 # Try to import JPype
 try:
@@ -63,6 +64,7 @@ env = Environment(
 # -------------------------
 
 PARSER = SimpleParser()
+REPLACER = SimpleReplacer
 
 # -------------------------
 # TUI Commands (Same as before)
@@ -389,6 +391,12 @@ def command_refactor(args: List[str]) -> None:
             #console.print("\n[bold cyan]Preview:[/bold cyan]")
             #console.print(prompt[:500] + ("..." if len(prompt) > 500 else ""))
 
+def command_apply(args: List[str]) -> None:
+    llm_response = pyperclip.paste()
+    console.print("\n[bold cyan]Preview:[/bold cyan]")
+    breakpoint()
+    console.print(llm_response[:500] + ("..." if len(llm_response) > 500 else ""))
+
 def command_implement(args: List[str]) -> None:
     """Implement command."""
     if not args:
@@ -458,7 +466,7 @@ def main_tui():
             user_input = pt_prompt(
                 "> ",
                 completer=WordCompleter([
-                    '/add', '/drop', '/method', '/refactor', '/ask',  
+                    '/add', '/drop', '/method', '/refactor', '/ask', '/paste',  
                     '/implement', '/test', '/status', '/help', '/quit'
                 ], ignore_case=True, WORD= True),
                 complete_style=CompleteStyle.MULTI_COLUMN
@@ -485,6 +493,8 @@ def main_tui():
                 command_test(args)
             elif command == '/ask':
                 command_ask(args)
+            elif command == '/paste':
+                command_apply(args)
             elif command == '/status':
                 if CONTEXT_FILES:
                     console.print(f"[cyan]Files: {len(CONTEXT_FILES)}[/cyan]")
