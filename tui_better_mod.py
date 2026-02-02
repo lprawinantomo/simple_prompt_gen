@@ -64,7 +64,7 @@ env = Environment(
 # -------------------------
 
 PARSER = SimpleParser()
-REPLACER = SimpleReplacer
+REPLACER = SimpleReplacer()
 
 # -------------------------
 # TUI Commands (Same as before)
@@ -393,9 +393,8 @@ def command_refactor(args: List[str]) -> None:
 
 def command_apply(args: List[str]) -> None:
     llm_response = pyperclip.paste()
-    console.print("\n[bold cyan]Preview:[/bold cyan]")
     breakpoint()
-    console.print(llm_response[:500] + ("..." if len(llm_response) > 500 else ""))
+    REPLACER.replace_method_with_llm_response(SELECTED_METHOD_INFO, llm_response)
 
 def command_implement(args: List[str]) -> None:
     """Implement command."""
