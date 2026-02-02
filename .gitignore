@@ -1,0 +1,22 @@
+*.iws
+*Db.properties
+*Db.script
+.settings
+*.log
+/*DB.*
+/cobertura.ser
+.DS_Store
+/target/
+build/
+.gradle/
+
+### Eclipse files
+.project
+.classpath
+.settings
+
+### IDEA Files
+.idea/
+*.iml
+out/
+__pycache__/

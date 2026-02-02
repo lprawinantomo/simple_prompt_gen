@@ -1,0 +1,11 @@
+Grails 5 (Groovy code) refactor task.
+Only modify the entry method unless specified.
+Guard against null input params.
+
+{{ context }}
+
+{% if user_prompt | trim %}
+Task: {{ user_prompt }}
+{% endif %}
+
+Return ONLY the refactored entry method code.

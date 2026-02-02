@@ -1,0 +1,8 @@
+jpype1
+rich
+pyperclip
+fuzzywuzzy
+python-Levenshtein
+prompt-toolkit
+ipdb
+jinja2
