@@ -9,3 +9,10 @@ Task: {{ user_prompt }}
 {% endif %}
 
 Return ONLY the refactored entry method code.
+
+Rules:
+- Do not reorder unrelated lines
+- Do not reformat unchanged code
+- Do not add or remove blank lines unless required
+- Do not add or remove spaces unless required
+- Preserve original indentation and line endings

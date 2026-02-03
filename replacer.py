@@ -37,7 +37,9 @@ class SimpleReplacer:
             # Add lines before the method
             if start_line > 0:
                 new_lines.extend(lines[:start_line])
-            
+
+            new_method_body = self.indent_if_needed(new_method_body)            
+
             # Add the new method with proper indentation
             new_method_lines = new_method_body.splitlines(keepends=False)
             
@@ -45,8 +47,8 @@ class SimpleReplacer:
             # Remove leading/trailing empty lines
             new_method_lines = [line for line in new_method_lines if line.strip() != '']
             # Add tab to each line
-            indented_method_lines = ['    ' + line for line in new_method_lines]
-            new_lines.extend(indented_method_lines)
+            #indented_method_lines = ['    ' + line for line in new_method_lines]
+            new_lines.extend(new_method_lines)
             
             # Add lines after the method
             if end_line + 1 < len(lines):
@@ -63,6 +65,12 @@ class SimpleReplacer:
         except Exception as e:
             print(f"Error replacing method: {e}")
             return False
+
+
+    def indent_if_needed(self, s) -> str:
+        if not s.startswith((' ', '\t')):
+            return '    ' + s
+        return s
 
     
     def replace_method_with_llm_response(self, selected_method_info: Dict, 
