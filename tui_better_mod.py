@@ -420,6 +420,14 @@ def command_ask(args: List[str]) -> None:
         pyperclip.copy(prompt)
         console.print("[green]✓ Prompt copied to clipboard[/green]")
 
+def command_comment(args: List[str]) -> None:
+    """Comment command."""
+    user_prompt = " ".join(args)
+    prompt = generate_prompt("comment", user_prompt)
+    if prompt:
+        pyperclip.copy(prompt)
+        console.print("[green]✓ Prompt copied to clipboard[/green]")
+
 def command_test(args: List[str]) -> None:
     """Test command."""
     user_prompt = " ".join(args).strip() or None
@@ -466,7 +474,7 @@ def main_tui():
                 "> ",
                 completer=WordCompleter([
                     '/add', '/drop', '/method', '/refactor', '/ask', '/paste',  
-                    '/implement', '/test', '/status', '/help', '/quit'
+                    '/comment','/implement', '/test', '/status', '/help', '/quit'
                 ], ignore_case=True, WORD= True),
                 complete_style=CompleteStyle.MULTI_COLUMN
             ).strip()
@@ -492,6 +500,8 @@ def main_tui():
                 command_test(args)
             elif command == '/ask':
                 command_ask(args)
+            elif command == '/comment':
+                command_comment(args)
             elif command == '/paste':
                 command_apply(args)
             elif command == '/status':
@@ -514,7 +524,9 @@ def main_tui():
   /refactor <prompt> - Refactor selected method
   /implement <prompt> - Implement functionality
   /test <prompt>   - Generate Spock tests
+  /ask <prompt>    - Ask about the method 
   /status          - Show current context
+  /paste           - Paste from clipboard to the selected method
   /quit            - Exit application
 
 [dim]Examples:[/dim]
