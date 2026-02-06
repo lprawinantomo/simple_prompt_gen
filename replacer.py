@@ -72,7 +72,53 @@ class SimpleReplacer:
             return '    ' + s
         return s
 
-    
+
+    def insert_above_line(self, path, content, line_number):
+        """
+        Insert string above specified line number.
+        Preserves relative indentation of the content block.
+        """
+        # Read file
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                file_lines = f.readlines()
+        else:
+            file_lines = []
+
+        # Determine base indentation from target line
+        insert_pos = max(0, min(line_number, len(file_lines)))
+        base_indent = ""
+
+        if insert_pos < len(file_lines):
+            target_line = file_lines[insert_pos]
+            #base_indent = target_line[:len(target_line) - len(target_line.lstrip())]
+            base_indent = "   "
+
+        # Normalize content lines without creating extra newlines
+        content_lines = content.splitlines(keepends=False)
+
+        lines_to_insert = []
+        for line in content_lines:
+            if line.strip() == "":
+                lines_to_insert.append("\n")
+            else:
+                lines_to_insert.append(f"{base_indent}{line}\n")
+
+        # Insert and write back
+        new_lines = (
+            file_lines[:insert_pos]
+            + lines_to_insert
+            + file_lines[insert_pos:]
+        )
+
+        with open(path, "w", encoding="utf-8") as f:
+            f.writelines(new_lines)
+
+
+    def add_comment_in_file(self, selected_method_info: Dict, comment: str) -> bool:
+        self.insert_above_line(selected_method_info["file"], comment, selected_method_info["start_line"] )
+
+
     def replace_method_with_llm_response(self, selected_method_info: Dict, 
                                         llm_response: str) -> bool:
         """
@@ -90,7 +136,6 @@ class SimpleReplacer:
         try:
             # Parse the JSON response
             response_data = json.loads(llm_response)
-            breakpoint()
             
             # Extract the refactored method
             if "refactored_method" not in response_data:
@@ -114,7 +159,6 @@ class SimpleReplacer:
 # Usage example:
 if __name__ == "__main__":
     replacer = SimpleReplacer()
-    breakpoint()
     
     # Example usage with LLM response
     llm_response_json = """{

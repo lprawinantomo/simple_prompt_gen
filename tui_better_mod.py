@@ -49,6 +49,7 @@ METHOD_INDEX: Dict = defaultdict(list)
 CLASS_METHODS: Dict = defaultdict(dict)
 JVM_STARTED = False
 TEMPLATE_DIR = Path(__file__).parent / "prompt_templates"
+LAST_TASK : Optional[str]
 
 env = Environment(
     loader=FileSystemLoader(TEMPLATE_DIR),
@@ -357,6 +358,8 @@ def generate_prompt(task_type: str, user_prompt: str, call_depth: int = 2) -> Op
             template_name = "refactor.j2"
 
         template = env.get_template(template_name)
+        global LAST_TASK
+        LAST_TASK = task_type
 
         return template.render(
             context=context_text,
@@ -392,9 +395,12 @@ def command_refactor(args: List[str]) -> None:
             #console.print(prompt[:500] + ("..." if len(prompt) > 500 else ""))
 
 def command_apply(args: List[str]) -> None:
+    global LAST_TASK
     llm_response = pyperclip.paste()
-    breakpoint()
-    REPLACER.replace_method_with_llm_response(SELECTED_METHOD_INFO, llm_response)
+    if LAST_TASK == "comment" :
+        REPLACER.add_comment_in_file(SELECTED_METHOD_INFO, llm_response)
+    else :
+        REPLACER.replace_method_with_llm_response(SELECTED_METHOD_INFO, llm_response)
 
 def command_implement(args: List[str]) -> None:
     """Implement command."""
